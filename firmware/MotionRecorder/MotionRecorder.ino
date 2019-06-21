@@ -9,12 +9,6 @@
 
 #define DBG_OUTPUT_PORT Serial
 
-// Your WiFi credentials.
-// Set password to "" for open networks.
-//char ssid[] = "Dualog-Guest";
-//char pass[] = "Duatos14";
-
-
 // -------------------- SD ------------------------------------
 // change this to match your SD shield or module;
 // WeMos Micro SD Shield V1.0.0: D8
