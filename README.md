@@ -20,7 +20,7 @@ Tiny data collector based on a ESP8266
     --------------
     Wemos D1
     --------------
-    Battery shield
+    Battery shield (bridge A0 to batt+ with a 100 ohm resistor)
     
 ## Connections
 
