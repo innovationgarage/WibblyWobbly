@@ -11,3 +11,17 @@ Tiny data collector based on a ESP8266
 * Accelerometer/Gyro GY-521 https://www.aliexpress.com/item/MPU-6050-3-Axis-gyroscope-acce-lerometer-module-3V-5V-compatible-For-Arduino/2035920870.html
 
 # Assembly
+
+## Layout stack
+
+    SD/RTC Shield
+    --------------
+    Accel/Gyro module held by hardware/gyro_holder.stl (x2, 1 mirrored)
+    --------------
+    Wemos D1
+    --------------
+    Battery shield (bridge A0 to batt+ with a 100 ohm resistor)
+    
+## Connections
+
+Accel/Gyro module: 5V and GND should be connected to the respective rail. SCL to D1, SDA to D2 and AD0 to 5V.
