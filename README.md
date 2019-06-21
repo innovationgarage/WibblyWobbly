@@ -1,4 +1,4 @@
-# WibblyWobbly
+# Wibbly Wobbly
 Tiny data collector based on a ESP8266
 
 ![](images/device.png)
@@ -21,6 +21,8 @@ Tiny data collector based on a ESP8266
     Wemos D1
     --------------
     Battery shield (bridge A0 to batt+ with a 100 ohm resistor)
+    
+![](images/parts.png)
     
 ## Connections
 
