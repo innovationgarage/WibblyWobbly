@@ -1,4 +1,4 @@
-# WibblyWobbly
+# Wibbly Wobbly
 Tiny data collector based on a ESP8266
 
 ![](images/device.png)
@@ -20,8 +20,12 @@ Tiny data collector based on a ESP8266
     --------------
     Wemos D1
     --------------
-    Battery shield (bridge A0 to batt+ with a 100 ohm resistor)
+    Battery shield
+    
+![](images/parts.png)
     
 ## Connections
 
 Accel/Gyro module: 5V and GND should be connected to the respective rail. SCL to D1, SDA to D2 and AD0 to 5V.
+
+Battery shield: Bridge A0 to batt+ with a 100 ohm resistor.
