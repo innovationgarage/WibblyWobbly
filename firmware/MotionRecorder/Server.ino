@@ -1,13 +1,5 @@
-#ifndef STASSID
-#define STASSID "Wibbly Wobbly"
-#endif
-
-const char* ssid = STASSID;
-const char* host = "wibblywobbly";
-
-ESP8266WebServer server(80);
-
 static bool hasSD = false;
+
 File uploadFile;
 
 void returnOK() {

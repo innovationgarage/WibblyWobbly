@@ -7,14 +7,27 @@
 #include <ESP8266mDNS.h>
 #include <RtcDS1307.h>
 
+// -------------------- GENERAL -------------------------------
 #define DBG_OUTPUT_PORT Serial
+
+// -------------------- WIFI ----------------------------------
+const bool WIFI_ENABLED = false; // Initialize wifi in the beggining
+const int TIMEOUT_WIFI = 30000; // Ms to timeout wifi if there is no activity
+
+#ifndef STASSID
+#define STASSID "Wibbly Wobbly"
+#endif
+
+const char* ssid = STASSID;
+const char* host = "wibblywobbly";
+
+ESP8266WebServer server(80);
 
 // -------------------- SD ------------------------------------
 // change this to match your SD shield or module;
 // WeMos Micro SD Shield V1.0.0: D8
 // LOLIN Micro SD Shield V1.2.0: D4 (Default)
 const int chipSelect = D4;
-
 
 // -------------------- ACCELEROMETER/GYRO --------------------
 // MPU6050 Slave Device Address
@@ -41,7 +54,6 @@ int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;
 //float Ax, Ay, Az, T, Gx, Gy, Gz;
 
 // -------------------- RTC ------------------------------------
-
 RtcDS1307<TwoWire> Rtc(Wire);
 #define countof(a) (sizeof(a) / sizeof(a[0]))
 
@@ -58,5 +70,5 @@ void printDateTime(const RtcDateTime& dt)
              dt.Hour(),
              dt.Minute(),
              dt.Second() );
-  Serial.print(datestring);
+  DBG_OUTPUT_PORT.print(datestring);
 }

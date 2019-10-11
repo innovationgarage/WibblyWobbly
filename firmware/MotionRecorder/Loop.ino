@@ -1,71 +1,98 @@
-long wait = 0;
+unsigned long wait;
 
-/*void loop()
-{
+bool wifiEnabled = WIFI_ENABLED;
+unsigned long timeoutWifiAccess = 0;
 
-  if (millis() > wait)
+void loop() {
+  if (wifiEnabled && millis() < timeoutWifiAccess)
   {
-    Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);
-    Serial.print(AccelX);
-    Serial.println();
-
-
-    if (!Rtc.IsDateTimeValid())
+    server.handleClient();
+    MDNS.update();
+  }
+  else
+  {
+    if (wifiEnabled)
     {
-      if (Rtc.LastError() != 0)
+      // Disable wifi
+      DBG_OUTPUT_PORT.print("Checking if nobody is actually connected");
+
+      if (wifi_softap_get_station_num() == 0)
       {
-        // we have a communications error
-        // see https://www.arduino.cc/en/Reference/WireEndTransmission for
-        // what the number means
-        Serial.print("RTC communications error = ");
-        Serial.println(Rtc.LastError());
+        DBG_OUTPUT_PORT.print("Turning WiFi access point off...");
+        WiFi.softAPdisconnect(true);
+        WiFi.enableAP(false);
+        wifiEnabled = false;
       }
       else
+        timeoutWifiAccess = millis() + TIMEOUT_WIFI;
+    }
+    else
+    {
+      // Do SD data collection
+      // Create the output file
+      String filename = String("capture_");
+      filename += random(100000, 999999);
+      filename += ".txt";
+
+      String d = String("time,diff_ms,ax,ay,az,gx,gy,gz,temp,batt");
+      DBG_OUTPUT_PORT.println(filename);
+
+      delay(5000);
+      unsigned long startup = millis();
+      while (true)
       {
-        // Common Causes:
-        //    1) the battery on the device is low or even missing and the power line was disconnected
-        Serial.println("RTC lost confidence in the DateTime!");
+        if (millis() > wait)
+        {
+          //DBG_OUTPUT_PORT.println("inside");
+
+          File file = SD.open(filename, FILE_WRITE);
+          if (file)
+          {
+            file.println(d);
+            file.close();
+            digitalWrite(D4, (millis() % 1000) > 500);
+          }
+          else
+          {
+            DBG_OUTPUT_PORT.println("error opening file");
+          }
+          //DBG_OUTPUT_PORT.println("outside");
+
+          // Dump next one
+          Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);
+          d = String(",");
+          d += String(AccelX);
+          d += String(",");
+          d += String(AccelY);
+          d += String(",");
+          d += String(AccelZ);
+          d += String(",");
+          d += String(GyroX);
+          d += String(",");
+          d += String(GyroY);
+          d += String(",");
+          d += String(GyroZ);
+          d += String(",");
+          d += String(Temperature);
+          d += String(",");
+          d += String(analogRead(A0));
+
+          String d2 = String(millis());
+          d2 += ",";
+
+          int time_it_took = (millis() - startup);
+          startup = millis();
+
+          d2 += time_it_took;
+          d = d2 + d;
+
+          wait = millis() + (70 - time_it_took);
+
+          //DBG_OUTPUT_PORT.println("outside4");
+          //DBG_OUTPUT_PORT.println(wait);
+        }
       }
     }
-
-    RtcDateTime now = Rtc.GetDateTime();
-
-    printDateTime(now);
-    Serial.println();
-    wait = millis() + 100;
-
-    // make a string for assembling the data to log:
-    String dataString = "";
-
-    // read three sensors and append to the string:
-    //for (int analogPin = 0; analogPin < 3; analogPin++) {
-    //  int sensor = analogRead(analogPin);
-    //  dataString += String(sensor);
-    //  if (analogPin < 2) {
-    //    dataString += ",";
-    //  }
-    //}
-    dataString += String(Rtc.GetDateTime());
-    dataString += String(",");
-    dataString += String(AccelX);
-
-    // open the file. note that only one file can be open at a time,
-    // so you have to close this one before opening another.
-    File dataFile = SD.open("capture.txt", FILE_WRITE);
-
-    // if the file is available, write to it:
-    if (dataFile) {
-      dataFile.println(dataString);
-      dataFile.close();
-      // print to the serial port too:
-      Serial.println(dataString);
-    }
-    // if the file isn't open, pop up an error:
-    else {
-      Serial.println("error opening datalog.txt");
-    }
-
 
   }
 }
-*/
